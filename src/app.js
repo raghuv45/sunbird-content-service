@@ -46,7 +46,7 @@ const enableLogging = process.env.sunbird_content_service_enable_logging
 const languageServiceApiKey = process.env.sunbird_language_service_api_key
 
 const producerId = process.env.sunbird_environment + '.' + process.env.sunbird_instance + '.content-service'
-const sunbirdPortalBaseUrl = process.env.sunbird_portal_base_url || 'https://staging.open-sunbird.org'
+const sunbirdPortalBaseUrl = process.env.sunbird_portal_base_url || 'https://dev.open-sunbird.org'
 
 configUtil.setContentProviderApi(contentProviderApiConfig.API)
 configUtil.setConfig('CONTENT_REPO_BASE_URL', contentRepoBaseUrl)

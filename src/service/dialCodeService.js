@@ -10,13 +10,13 @@ var _ = require('lodash')
 var contentProvider = require('sb_content_provider_util')
 var respUtil = require('response_util')
 var LOG = require('sb_logger_util')
-var configUtil = require('sb-config-util')
+// var configUtil = require('sb-config-util')
 
 var messageUtils = require('./messageUtil')
 var utilsService = require('../service/utilsService')
 var ImageService = require('./dialCode/imageService')
 var BatchImageService = require('./dialCode/batchImageService')
-var dialCodeServiceHelper = require('./dialCode/dialCodeServiceHelper')
+// var dialCodeServiceHelper = require('./dialCode/dialCodeServiceHelper')
 
 var filename = path.basename(__filename)
 var dialCodeMessage = messageUtils.DIALCODE
@@ -29,95 +29,102 @@ var responseCode = messageUtils.RESPONSE_CODE
  * @returns {object} return response object with http status
  */
 function generateDialCodeAPI (req, response) {
-  var data = req.body
-  var rspObj = req.rspObj
+  console.log('cmngn')
+  // var data = req.body
+  // var rspObj = req.rspObj
 
-  if (!data.request || !data.request.dialcodes) {
-    LOG.error(utilsService.getLoggerData(rspObj, 'ERROR', filename, 'generateDialCodeAPI',
-      'Error due to required params are missing', data.request))
-    rspObj.errCode = dialCodeMessage.GENERATE.MISSING_CODE
-    rspObj.errMsg = dialCodeMessage.GENERATE.MISSING_MESSAGE
-    rspObj.responseCode = responseCode.CLIENT_ERROR
-    return response.status(400).send(respUtil.errorResponse(rspObj))
-  }
+  ImageService.prototype.insertImg('sdfsdf', 'sdfsdfsd', 'Sdfdsfds', function (err, done) {
+    if (err) {
 
-  if (!_.get(data, 'request.dialcodes.count') || !_.isSafeInteger(data.request.dialcodes.count)) {
-    LOG.error(utilsService.getLoggerData(rspObj, 'ERROR', filename, 'generateDialCodeAPI',
-      'Error due to error in count input', data.request))
-    rspObj.errCode = dialCodeMessage.GENERATE.MISSING_COUNT
-    rspObj.errMsg = dialCodeMessage.GENERATE.MISSING_COUNT_MESSAGE
-    rspObj.responseCode = responseCode.CLIENT_ERROR
-    return response.status(400).send(respUtil.errorResponse(rspObj))
-  }
-
-  // Transform request for Content provider
-  var reqData = {
-    request: data.request
-  }
-  var requestedCount = _.clone(_.get(data, 'request.dialcodes.count'))
-  async.waterfall([
-
-    function (CBW) {
-      LOG.info(utilsService.getLoggerData(rspObj, 'INFO', filename, 'generateDialCodeAPI',
-        'Request to generate the dialcode', {
-          body: reqData,
-          headers: req.headers
-        }))
-
-      dialCodeServiceHelper.generateDialcodes(reqData, req.headers, function (err, res) {
-        if (err || _.indexOf([responseCode.SUCCESS, responseCode.PARTIAL_SUCCESS], res.responseCode) === -1) {
-          LOG.error(utilsService.getLoggerData(rspObj, 'ERROR', filename, 'generateDialCodeAPI', 'Getting error', res))
-          rspObj.errCode = res && res.params ? res.params.err : dialCodeMessage.GENERATE.FAILED_CODE
-          rspObj.errMsg = res && res.params ? res.params.errmsg : dialCodeMessage.GENERATE.FAILED_MESSAGE
-          rspObj.responseCode = res && res.responseCode ? res.responseCode : responseCode.SERVER_ERROR
-          var httpStatus = res && res.statusCode >= 100 && res.statusCode < 600 ? res.statusCode : 500
-          rspObj = utilsService.getErrorResponse(rspObj, res)
-          return response.status(httpStatus).send(respUtil.errorResponse(rspObj))
-        } else {
-          CBW(null, res)
-        }
-      })
-    }, function (res, CBW) {
-      var requestObj = data && data.request && data.request.dialcodes ? data.request.dialcodes : {}
-      if (requestObj.qrCodeSpec && !_.isEmpty(requestObj.qrCodeSpec) && res.result.dialcodes &&
-       res.result.dialcodes.length) {
-        var batchImageService = new BatchImageService({
-          width: requestObj.qrCodeSpec.width,
-          height: requestObj.qrCodeSpec.height,
-          border: requestObj.qrCodeSpec.border,
-          text: requestObj.qrCodeSpec.text,
-          errCorrectionLevel: requestObj.qrCodeSpec.errCorrectionLevel,
-          color: requestObj.qrCodeSpec.color
-        })
-        var channel = _.clone(req.headers['x-channel-id'])
-        batchImageService.createRequest(res.result.dialcodes, channel, requestObj.publisher, rspObj,
-          function (err, processId) {
-            if (err) {
-              LOG.error(utilsService.getLoggerData(rspObj, 'ERROR', filename, 'generateDialCodeAPI',
-                'Error while creating request to child process for images creation', err))
-              res.responseCode = responseCode.PARTIAL_SUCCESS
-              return response.status(207).send(respUtil.successResponse(res))
-            } else {
-              res.result.processId = processId
-              CBW(null, res)
-            }
-          })
-      } else {
-        CBW(null, res)
-      }
-    },
-    function (res) {
-      rspObj.result = res.result
-      LOG.info(utilsService.getLoggerData(rspObj, 'INFO', filename, 'generateDialCodeAPI',
-        'Return response back to user', rspObj))
-
-      if (requestedCount > configUtil.getConfig('DIALCODE_GENERATE_MAX_COUNT')) {
-        rspObj.responseCode = responseCode.PARTIAL_SUCCESS
-        return response.status(207).send(respUtil.successResponse(rspObj))
-      }
-      return response.status(200).send(respUtil.successResponse(rspObj))
     }
-  ])
+    console.log('callback reciebed')
+  })
+  // if (!data.request || !data.request.dialcodes) {
+  //   LOG.error(utilsService.getLoggerData(rspObj, 'ERROR', filename, 'generateDialCodeAPI',
+  //     'Error due to required params are missing', data.request))
+  //   rspObj.errCode = dialCodeMessage.GENERATE.MISSING_CODE
+  //   rspObj.errMsg = dialCodeMessage.GENERATE.MISSING_MESSAGE
+  //   rspObj.responseCode = responseCode.CLIENT_ERROR
+  //   return response.status(400).send(respUtil.errorResponse(rspObj))
+  // }
+
+  // if (!_.get(data, 'request.dialcodes.count') || !_.isSafeInteger(data.request.dialcodes.count)) {
+  //   LOG.error(utilsService.getLoggerData(rspObj, 'ERROR', filename, 'generateDialCodeAPI',
+  //     'Error due to error in count input', data.request))
+  //   rspObj.errCode = dialCodeMessage.GENERATE.MISSING_COUNT
+  //   rspObj.errMsg = dialCodeMessage.GENERATE.MISSING_COUNT_MESSAGE
+  //   rspObj.responseCode = responseCode.CLIENT_ERROR
+  //   return response.status(400).send(respUtil.errorResponse(rspObj))
+  // }
+
+  // // Transform request for Content provider
+  // var reqData = {
+  //   request: data.request
+  // }
+  // var requestedCount = _.clone(_.get(data, 'request.dialcodes.count'))
+  // async.waterfall([
+
+  //   function (CBW) {
+  //     LOG.info(utilsService.getLoggerData(rspObj, 'INFO', filename, 'generateDialCodeAPI',
+  //       'Request to generate the dialcode', {
+  //         body: reqData,
+  //         headers: req.headers
+  //       }))
+
+  //     dialCodeServiceHelper.generateDialcodes(reqData, req.headers, function (err, res) {
+  //       if (err || _.indexOf([responseCode.SUCCESS, responseCode.PARTIAL_SUCCESS], res.responseCode) === -1) {
+  //         LOG.error(utilsService.getLoggerData(rspObj, 'ERROR', filename, 'generateDialCodeAPI', 'Getting error', res))
+  //         rspObj.errCode = res && res.params ? res.params.err : dialCodeMessage.GENERATE.FAILED_CODE
+  //         rspObj.errMsg = res && res.params ? res.params.errmsg : dialCodeMessage.GENERATE.FAILED_MESSAGE
+  //         rspObj.responseCode = res && res.responseCode ? res.responseCode : responseCode.SERVER_ERROR
+  //         var httpStatus = res && res.statusCode >= 100 && res.statusCode < 600 ? res.statusCode : 500
+  //         rspObj = utilsService.getErrorResponse(rspObj, res)
+  //         return response.status(httpStatus).send(respUtil.errorResponse(rspObj))
+  //       } else {
+  //         CBW(null, res)
+  //       }
+  //     })
+  //   }, function (res, CBW) {
+  //     var requestObj = data && data.request && data.request.dialcodes ? data.request.dialcodes : {}
+  //     if (requestObj.qrCodeSpec && !_.isEmpty(requestObj.qrCodeSpec) && res.result.dialcodes &&
+  //      res.result.dialcodes.length) {
+  //       var batchImageService = new BatchImageService({
+  //         width: requestObj.qrCodeSpec.width,
+  //         height: requestObj.qrCodeSpec.height,
+  //         border: requestObj.qrCodeSpec.border,
+  //         text: requestObj.qrCodeSpec.text,
+  //         errCorrectionLevel: requestObj.qrCodeSpec.errCorrectionLevel,
+  //         color: requestObj.qrCodeSpec.color
+  //       })
+  //       var channel = _.clone(req.headers['x-channel-id'])
+  //       batchImageService.createRequest(res.result.dialcodes, channel, requestObj.publisher, rspObj,
+  //         function (err, processId) {
+  //           if (err) {
+  //             LOG.error(utilsService.getLoggerData(rspObj, 'ERROR', filename, 'generateDialCodeAPI',
+  //               'Error while creating request to child process for images creation', err))
+  //             res.responseCode = responseCode.PARTIAL_SUCCESS
+  //             return response.status(207).send(respUtil.successResponse(res))
+  //           } else {
+  //             res.result.processId = processId
+  //             CBW(null, res)
+  //           }
+  //         })
+  //     } else {
+  //       CBW(null, res)
+  //     }
+  //   },
+  //   function (res) {
+  //     rspObj.result = res.result
+  //     LOG.info(utilsService.getLoggerData(rspObj, 'INFO', filename, 'generateDialCodeAPI',
+  //       'Return response back to user', rspObj))
+
+  //     if (requestedCount > configUtil.getConfig('DIALCODE_GENERATE_MAX_COUNT')) {
+  //       rspObj.responseCode = responseCode.PARTIAL_SUCCESS
+  //       return response.status(207).send(respUtil.successResponse(rspObj))
+  //     }
+  //     return response.status(200).send(respUtil.successResponse(rspObj))
+  //   }
+  // ])
 }
 
 /**

@@ -146,14 +146,16 @@ ImageService.prototype.getImgFromDB = function (dialcode, channel, publisher, ca
 ImageService.prototype.insertImg = function (dialcode, channel, publisher, callback) {
   var fileName = dialcode + '_' + Date.now()
   var image = new dbModel.instance.dialcode_images({
-    dialcode: dialcode,
-    config: this.configToString(),
+    dialcode: 'dialcode',
+    config: { type: 'map', typeDef: 'sdfsdf18' },
+    url: 'sdfsdfs',
     status: 1,
-    filename: fileName,
-    channel: channel,
-    publisher: publisher
+    filename: 'insertedfromterminal23456',
+    channel: 'test',
+    publisher: 'SDfsdfsdfdsf18'
   })
   image.save(function (error) {
+    console.log('error', error)
     if (error) {
       LOG.error({'Unable to insert data to images table : ': error,
         dialcode,
@@ -162,6 +164,7 @@ ImageService.prototype.insertImg = function (dialcode, channel, publisher, callb
       })
       callback(error, null)
     } else {
+      console.log('inserted')
       callback(error, fileName)
     }
   })

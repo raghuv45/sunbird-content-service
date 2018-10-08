@@ -4,24 +4,29 @@ var path = require('path')
 var filename = path.basename(__filename)
 var contactPoints = process.env.sunbird_cassandra_ips.split(',')
 var cassandra = require('cassandra-driver')
-
+contactPoints = ['172.16.0.152', '172.16.0.115', '172.16.0.63']
+// contactPoints: ['10.0.1.138','10.0.1.178','10.0.1.65'],
+// 172.16.0.63// anoop
+// 172.16.0.115 vinaya
+console.log('models.consistencies.quorum ', models.consistencies.quorum)
 models.setDirectory(path.join(__dirname, '.', '..', 'models', 'cassandra')).bind(
   {
     clientOptions: {
       contactPoints: contactPoints,
-      protocolOptions: { port: process.env.sunbird_cassandra_port },
+      protocolOptions: { port: 9042 },
       keyspace: 'dialcodes',
-      queryOptions: { consistency: models.consistencies.one }
+      queryOptions: { consistency: models.consistencies.quorum }
     },
     ormOptions: {
       defaultReplicationStrategy: {
-        class: 'SimpleStrategy',
-        replication_factor: 1
+        class: 'NetworkTopologyStrategy',
+        datacenter1: 2
       },
       migration: 'safe'
     }
   },
   function (err) {
+    // console.log("dsfsdf",new cassandra.policies.loadBalancing.DCAwareRoundRobinPolicy('172.16.0.152',1))
     if (err) {
       LOG.error({ filename, 'Error connecting to the database: ': err })
       throw err

@@ -11,8 +11,7 @@ var BASE_URL = '/v1/dialcode'
 
 module.exports = function (app) {
   app.route(BASE_URL + '/generate')
-    .post(requestMiddleware.createAndValidateRequestBody, requestMiddleware.checkChannelID,
-      dialCodeService.generateDialCodeAPI)
+    .post(dialCodeService.generateDialCodeAPI)
 
   app.route(BASE_URL + '/list')
     .post(requestMiddleware.createAndValidateRequestBody, requestMiddleware.checkChannelID,
