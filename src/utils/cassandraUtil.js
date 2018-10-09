@@ -4,8 +4,8 @@ var path = require('path')
 var filename = path.basename(__filename)
 var contactPoints = process.env.sunbird_cassandra_ips.split(',')
 var cassandra = require('cassandra-driver')
-contactPoints = ['172.16.0.152', '172.16.0.115', '172.16.0.63']
-// contactPoints: ['10.0.1.138','10.0.1.178','10.0.1.65'],
+// contactPoints = ['172.16.0.152', '172.16.0.115', '172.16.0.63']
+contactPoints = ['10.0.1.138', '10.0.1.168', '10.0.1.65']
 // 172.16.0.63// anoop
 // 172.16.0.115 vinaya
 console.log('models.consistencies.quorum ', models.consistencies.quorum)
